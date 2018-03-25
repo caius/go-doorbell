@@ -57,10 +57,11 @@ func (p *MQTTPublisher) Start(events <-chan Event) {
 		"location": p.Name,
 	}).Info("MQTTPublisher publishing")
 
+	willTopic := fmt.Sprintf("tele/%s/LWT", p.Name)
+
 	mqttParams := mqtt.NewClientOptions()
 	mqttParams.AddBroker(fmt.Sprintf("tcp://%s", p.Broker))
 	mqttParams.SetClientID(p.clientId())
-	willTopic := fmt.Sprintf("tele/%s/LWT", p.Name)
 	mqttParams.SetWill(willTopic, "Offline", 0, true)
 
 	p.client = mqtt.NewClient(mqttParams)
@@ -78,5 +79,4 @@ func (p *MQTTPublisher) Start(events <-chan Event) {
 
 func (p *MQTTPublisher) Stop() {
 	log.Info("MQTTPublisher received stop")
-	p.client.Disconnect(250)
 }
