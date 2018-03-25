@@ -18,9 +18,11 @@ func (s *Sensor) listenForPress() {
 			"value": e.Value,
 		}).Debug("Pin triggered")
 
-		if e.Value == 1 { // High
-			log.Info("Doorbell pin went high, triggering!")
+		switch e.Value {
+		case 1:
 			s.doorbellPressed()
+		case 0:
+			s.doorbellDepressed()
 		}
 	}
 }
