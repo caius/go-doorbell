@@ -13,8 +13,7 @@ func init() {
 func main() {
 
 	pressChannel := make(chan doorbell.Event)
-	sensor := doorbell.NewSensor(11, pressChannel)
-
+	sensor := doorbell.NewSensor(17, pressChannel)
 	go sensor.Start()
 
 	for _ = range pressChannel {
