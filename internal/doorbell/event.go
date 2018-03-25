@@ -5,9 +5,9 @@ import (
 )
 
 type Event struct {
-	TriggeredAt time.Time
+	PressedAt time.Time
 }
 
 func NewEventNow() Event {
-	return Event{TriggeredAt: time.Now()}
+	return Event{PressedAt: time.Now()}
 }
