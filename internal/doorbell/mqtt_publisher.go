@@ -43,7 +43,11 @@ func (p *MQTTPublisher) publishEvent(event Event) {
 	}).Debug("MQTTPublisher publishing")
 
 	if p.client.IsConnected() {
-		p.client.Publish(topic, 0, false, "RING").Wait()
+		msg := "OFF"
+		if event.RingRing() {
+			msg = "ON"
+		}
+		p.client.Publish(topic, 0, false, msg).Wait()
 	}
 }
 

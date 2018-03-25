@@ -7,13 +7,18 @@ import (
 
 func (s *Sensor) listenForPress() {
 	log.Info("Darwin sensor listening for press")
-	s.doorbellPressed()
+	s.darwinPress()
 
 	ticker := time.NewTicker(time.Second * 10)
 
 	for _ = range ticker.C {
-		s.doorbellPressed()
-		time.Sleep(3)
+		s.darwinPress()
 	}
 
+}
+
+func (s *Sensor) darwinPress() {
+	s.doorbellPressed()
+	time.Sleep(time.Second * 3)
+	s.doorbellDepressed()
 }

@@ -1,13 +1,27 @@
 package doorbell
 
-import (
-	"time"
-)
+import ()
 
 type Event struct {
-	PressedAt time.Time
+	Value int
 }
 
-func NewEventNow() Event {
-	return Event{PressedAt: time.Now()}
+func NewEvent() Event {
+	return Event{}
+}
+
+func NewPressEvent() Event {
+	e := NewEvent()
+	e.Value = 1
+	return e
+}
+
+func NewDepressEvent() Event {
+	e := NewEvent()
+	e.Value = 0
+	return e
+}
+
+func (e *Event) RingRing() bool {
+	return e.Value == 1
 }

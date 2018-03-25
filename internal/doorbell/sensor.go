@@ -27,6 +27,9 @@ func (s *Sensor) Stop() {
 }
 
 func (s *Sensor) doorbellPressed() {
-	log.Info("Doorbell pressed!")
-	s.Output <- NewEventNow()
+	s.Output <- NewPressEvent()
+}
+
+func (s *Sensor) doorbellDepressed() {
+	s.Output <- NewDepressEvent()
 }
