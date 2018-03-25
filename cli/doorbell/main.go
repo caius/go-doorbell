@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	// "fmt"
+	"github.com/caius/go-doorbell/internal/doorbell"
 	log "github.com/sirupsen/logrus"
 	"os"
 	// "os/signal"
-	// "time"
+	"time"
 )
 
 type Configuration struct {
@@ -65,4 +66,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	pressChannel := make(chan doorbell.Event)
+	s := doorbell.NewSensor(config.Pin, pressChannel)
+
+	go s.Start()
+
+	publisher := doorbell.NewMQTTPublisher(config.MQTTBroker, config.Name)
+	go publisher.Start(pressChannel)
+
+	time.Sleep(time.Second * 5)
 }
