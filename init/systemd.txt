@@ -1,0 +1,16 @@
+# Copy to /etc/systemd/system to activate
+#
+
+[Unit]
+Description=doorbell server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/tmp
+ExecStart=/root/go/bin/doorbell --pin 17 --mqtt-broker mqtt:1883 --name front-door
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
