@@ -6,8 +6,7 @@ import (
 	"github.com/caius/go-doorbell/internal/doorbell"
 	log "github.com/sirupsen/logrus"
 	"os"
-	// "os/signal"
-	"time"
+	"os/signal"
 )
 
 type Configuration struct {
@@ -67,12 +66,27 @@ func main() {
 	}
 
 	pressChannel := make(chan doorbell.Event)
-	s := doorbell.NewSensor(config.Pin, pressChannel)
+	sensor := doorbell.NewSensor(config.Pin, pressChannel)
 
-	go s.Start()
+	go sensor.Start()
 
 	publisher := doorbell.NewMQTTPublisher(config.MQTTBroker, config.Name)
 	go publisher.Start(pressChannel)
 
-	time.Sleep(time.Second * 5)
+	// Trap and cleanup on interrupt (^C)
+	signalChan := make(chan os.Signal, 1)
+	cleanupDone := make(chan bool)
+	signal.Notify(signalChan, os.Interrupt)
+	go func() {
+		for _ = range signalChan {
+			log.Info("Received interrupt, bringing everything down")
+
+			sensor.Stop()
+			publisher.Stop()
+
+			cleanupDone <- true
+		}
+	}()
+	<-cleanupDone
+	log.Info("Goodbye!")
 }
