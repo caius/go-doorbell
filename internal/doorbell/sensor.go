@@ -1,6 +1,8 @@
 package doorbell
 
-import ()
+import (
+	log "github.com/sirupsen/logrus"
+)
 
 type Sensor struct {
 	Pin    int
@@ -12,4 +14,15 @@ func NewSensor(pin int, output chan Event) Sensor {
 		Pin:    pin,
 		Output: output,
 	}
+}
+
+// Blocks
+func (s *Sensor) Start() {
+	log.Info("Sensor starting up")
+	s.listenForPress()
+}
+
+func (s *Sensor) doorbellPressed() {
+	log.Info("Doorbell pressed!")
+	s.Output <- NewEventNow()
 }
