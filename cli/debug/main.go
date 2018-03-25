@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/caius/go-doorbell/internal/doorbell"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,8 +13,14 @@ func init() {
 
 func main() {
 
+	var pin int
+	flag.IntVar(&pin, "pin", 0, "GPIO Pin (Physical number) to listen for doorbell on")
+	flag.Parse()
+
+	log.Info("Welcome to doorbell debugger")
+
 	pressChannel := make(chan doorbell.Event)
-	sensor := doorbell.NewSensor(17, pressChannel)
+	sensor := doorbell.NewSensor(pin, pressChannel)
 	go sensor.Start()
 
 	for _ = range pressChannel {
